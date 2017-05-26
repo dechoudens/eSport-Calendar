@@ -1,5 +1,6 @@
 package antoine.dechoudens.hesge.ch.ecalendar.presentation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,8 +19,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeSet;
 
 import antoine.dechoudens.hesge.ch.ecalendar.R;
@@ -30,15 +34,49 @@ import antoine.dechoudens.hesge.ch.ecalendar.metier.ListeGames;
 public class MainActivity extends AppCompatActivity implements GetFromUrl.Listener{
     private ListeGames listeGames;
     private ListView lvGames;
+    public static final int GAME = 0;
+    public static final int RESULT_CANCEL = 1;
+    public static final int RESULT_OK = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         definirVariables();
+        definirListener();
         initialise();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+    }
+
+    private void definirListener() {
+        lvGames.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap<String, Object> hm = (HashMap<String, Object>) parent.getItemAtPosition(position);
+                Game game = (Game)hm.get(ListeGames.REF_GAME);
+                Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+                intent.putExtra("game", game);
+                startActivityForResult(intent, GAME);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode){
+            case GAME:
+                switch(resultCode){
+                    case RESULT_OK:
+
+
+                        break;
+                    case RESULT_CANCELED:
+
+                        break;
+                }
+                break;
+        }
     }
 
     private void definirVariables() {
@@ -57,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements GetFromUrl.Listen
         return true;
     }
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -70,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements GetFromUrl.Listen
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public void onGetFromUrlResult(JSONObject json) {

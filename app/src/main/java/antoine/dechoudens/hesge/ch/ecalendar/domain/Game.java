@@ -2,11 +2,13 @@ package antoine.dechoudens.hesge.ch.ecalendar.domain;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 /**
  * Created by Meckanik on 26.05.2017.
  */
 
-public class Game implements Comparable{
+public class Game implements Comparable, Serializable{
     String nom;
 
     public Game(String nom) {

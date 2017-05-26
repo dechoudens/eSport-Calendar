@@ -1,5 +1,7 @@
 package antoine.dechoudens.hesge.ch.ecalendar.presentation;
 
+import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
@@ -8,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
 import antoine.dechoudens.hesge.ch.ecalendar.R;
@@ -19,6 +22,9 @@ import antoine.dechoudens.hesge.ch.ecalendar.metier.ListeCompetitions;
 import antoine.dechoudens.hesge.ch.ecalendar.metier.ListeGames;
 
 import static antoine.dechoudens.hesge.ch.ecalendar.R.id.lvGames;
+import static antoine.dechoudens.hesge.ch.ecalendar.presentation.MainActivity.GAME;
+import static antoine.dechoudens.hesge.ch.ecalendar.presentation.MainActivity.RESULT_CANCEL;
+import static antoine.dechoudens.hesge.ch.ecalendar.presentation.MainActivity.RESULT_OK;
 
 public class GameActivity extends AppCompatActivity implements GetFromUrl.Listener{
     private ListeCompetitions listeCompetitions;
@@ -37,8 +43,9 @@ public class GameActivity extends AppCompatActivity implements GetFromUrl.Listen
     }
 
     private void initialise() {
-        //TO DO: INTENT - et passer le nom du jeu en URL_OBS + nom
-        new GetFromUrl(this).execute(NomsWebService.URL_OBS);
+        Intent intent = getIntent();
+        Game game = (Game)intent.getSerializableExtra(ListeGames.REF_GAME);
+        new GetFromUrl(this).execute(NomsWebService.URL_OBS + game.getNom());
     }
 
     @Override
