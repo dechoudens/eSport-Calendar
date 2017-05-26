@@ -6,10 +6,10 @@ import android.support.annotation.NonNull;
  * Created by Meckanik on 26.05.2017.
  */
 
-public class Game implements Comparable{
+public class Competition implements Comparable{
     String nom;
 
-    public Game(String nom) {
+    public Competition(String nom) {
         this.nom = nom;
     }
 
@@ -23,7 +23,7 @@ public class Game implements Comparable{
 
     @Override
     public int compareTo(@NonNull Object o) {
-        Game otherGame = (Game)o;
-        return this.getNom().compareTo(otherGame.getNom());
+        Competition otherComp = (Competition)o;
+        return this.getNom().compareTo(otherComp.getNom());
     }
 }

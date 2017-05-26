@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -16,16 +17,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 import antoine.dechoudens.hesge.ch.ecalendar.R;
 import antoine.dechoudens.hesge.ch.ecalendar.base.GetFromUrl;
 import antoine.dechoudens.hesge.ch.ecalendar.base.NomsWebService;
 import antoine.dechoudens.hesge.ch.ecalendar.domain.Game;
+import antoine.dechoudens.hesge.ch.ecalendar.metier.ListeGames;
 
 public class MainActivity extends AppCompatActivity implements GetFromUrl.Listener{
-    private List<Game> games;
-    private TextView tvTest;
+    private ListeGames listeGames;
+    private ListView lvGames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +42,11 @@ public class MainActivity extends AppCompatActivity implements GetFromUrl.Listen
     }
 
     private void definirVariables() {
-        tvTest = (TextView)findViewById(R.id.tvTest);
+        lvGames = (ListView) findViewById(R.id.lvGames);
     }
 
     private void initialise() {
-        new GetFromUrl(this).execute(NomsWebService.URL_BASE);
+        new GetFromUrl(this).execute(NomsWebService.URL_TAGS);
     }
 
 
@@ -70,20 +74,24 @@ public class MainActivity extends AppCompatActivity implements GetFromUrl.Listen
 
     @Override
     public void onGetFromUrlResult(JSONObject json) {
-        games = new ArrayList<>();
-        tvTest.setText("...Loading...");
+        TreeSet<Game> games = new TreeSet<>();
         try {
-            JSONArray JSONtags = json.getJSONArray("tag_list");
-            JSONArray JSONobs = json.getJSONArray("list");
-            tvTest.setText(JSONobs.get(0).toString());
+            JSONObject JSONtags = json.getJSONObject("tag_list");
+            JSONObject JSONList = JSONtags.getJSONObject("list");
+            Iterator itr = JSONList.keys();
+            String res = "";
+            while(itr.hasNext()){
+                games.add(new Game(itr.next().toString()));
+            }
+            listeGames = new ListeGames(this, games);
+            lvGames.setAdapter(listeGames.getAdapter());
         } catch (JSONException e) {
-            tvTest.setText("Fuck");
+            e.printStackTrace();
         }
-
     }
 
     @Override
     public void onGetFromUrlError(Exception e) {
-        tvTest.setText(e.getMessage());
+        Log.d("game", e.getMessage());
     }
 }
