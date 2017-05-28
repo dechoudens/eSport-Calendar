@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements GetFromUrl.Listen
     private ListeGames listeGames;
     private ListView lvGames;
     public static final int GAME = 0;
+    public static final int COMP = 3;
     public static final int RESULT_CANCEL = 1;
     public static final int RESULT_OK = 2;
 

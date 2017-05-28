@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.GameActivity"></activity>
+        <activity android:name=".presentation.GameActivity" />
+        <activity android:name=".presentation.CompActivity"></activity>
     </application>
 
 </manifest>
