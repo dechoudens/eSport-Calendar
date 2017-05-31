@@ -1,6 +1,7 @@
 package antoine.dechoudens.hesge.ch.ecalendar.presentation;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,17 +15,25 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import antoine.dechoudens.hesge.ch.ecalendar.R;
+import antoine.dechoudens.hesge.ch.ecalendar.base.GetFromUrl;
+import antoine.dechoudens.hesge.ch.ecalendar.base.NomsWebService;
+import antoine.dechoudens.hesge.ch.ecalendar.base.PostEntries;
+import antoine.dechoudens.hesge.ch.ecalendar.domain.Competition;
 import antoine.dechoudens.hesge.ch.ecalendar.domain.Game;
 
-public class AjouterActivity extends AppCompatActivity {
+public class AjouterActivity extends AppCompatActivity implements PostEntries.Listener{
     private Calendar myCalendar = Calendar.getInstance();
     private TextView tvTitreGameAjouter;
     private EditText etDate1;
@@ -34,6 +43,7 @@ public class AjouterActivity extends AppCompatActivity {
     private Button btnPlusDate;
     private static Context context;
     private Game game;
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +130,19 @@ public class AjouterActivity extends AppCompatActivity {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String nom = etNom.getText().toString();
+                String description = etDescription.getText().toString();
+                List<String> dates = new ArrayList<String>();
+                dates.add(etDate1.getText().toString());
+                Competition competition = new Competition(nom, description, "", dates, game);
+                new PostEntries(AjouterActivity.this).execute(competition);
 
+                dialog = new ProgressDialog(AjouterActivity.this);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setMessage("Loading. Please wait...");
+                dialog.setIndeterminate(true);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
             }
         });
 
@@ -146,5 +168,41 @@ public class AjouterActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.FRANCE);
 
         etDate1.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    @Override
+    public void onGetFromUrlResult(String result) {
+        dialog.cancel();
+
+        CharSequence text = "Compétition ajoutée avec succès !";
+        int duration = Toast.LENGTH_LONG;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
+        reinit();
+    }
+
+    @Override
+    public void onGetFromUrlError(Exception e) {
+        dialog.cancel();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("ERREUR - La compétition n'a pas été ajoutée");
+        builder.setCancelable(true);
+        builder.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void reinit() {
+        etDescription.setText("");
+        etDate1.setText("");
+        etNom.setText("");
     }
 }

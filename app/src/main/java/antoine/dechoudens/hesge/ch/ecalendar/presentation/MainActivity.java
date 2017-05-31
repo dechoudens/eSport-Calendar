@@ -65,23 +65,6 @@ public class MainActivity extends AppCompatActivity implements GetFromUrl.Listen
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode){
-            case GAME:
-                switch(resultCode){
-                    case RESULT_OK:
-
-
-                        break;
-                    case RESULT_CANCELED:
-
-                        break;
-                }
-                break;
-        }
-    }
-
     private void definirVariables() {
         lvGames = (ListView) findViewById(R.id.lvGames);
         tvGame = (TextView) findViewById(R.id.tvGame);

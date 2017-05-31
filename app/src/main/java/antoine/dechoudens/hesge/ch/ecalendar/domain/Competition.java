@@ -55,4 +55,13 @@ public class Competition implements Comparable, Serializable{
     public List<String> getDates() {
         return dates;
     }
+
+    public String getValues(){
+        String values = nom + ";" + description + ";";
+        for (String date : dates){
+            values += date + ";";
+        }
+        values.substring(0, values.length() - 1);
+        return values;
+    }
 }
