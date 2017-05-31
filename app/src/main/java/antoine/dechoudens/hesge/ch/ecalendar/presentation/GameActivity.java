@@ -87,6 +87,7 @@ public class GameActivity extends AppCompatActivity implements GetFromUrl.Listen
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AjouterActivity.class);
+                intent.putExtra("game", game);
                 startActivity(intent);
             }
         });

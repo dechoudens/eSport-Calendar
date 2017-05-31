@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements GetFromUrl.Listen
         initialise();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle("eCalendar");
     }
 
     private void definirListener() {
