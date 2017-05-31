@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements GetFromUrl.Listen
     public static final int COMP = 3;
     public static final int RESULT_CANCEL = 1;
     public static final int RESULT_OK = 2;
+    private TextView tvGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +83,13 @@ public class MainActivity extends AppCompatActivity implements GetFromUrl.Listen
 
     private void definirVariables() {
         lvGames = (ListView) findViewById(R.id.lvGames);
+        tvGame = (TextView) findViewById(R.id.tvGame);
     }
 
     private void initialise() {
         new GetFromUrl(this).execute(NomsWebService.URL_TAGS);
+        tvGame.setText("Sélectionnez un jeu que vous souhaitez suivre");
+        MainActivity.this.setTitle("eCalendar");
     }
 
 

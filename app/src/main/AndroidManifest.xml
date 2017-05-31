@@ -3,6 +3,8 @@
     package="antoine.dechoudens.hesge.ch.ecalendar">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".presentation.GameActivity" />
-        <activity android:name=".presentation.CompActivity"></activity>
+        <activity android:name=".presentation.CompActivity" />
+        <activity android:name=".presentation.AjouterActivity"></activity>
     </application>
 
 </manifest>

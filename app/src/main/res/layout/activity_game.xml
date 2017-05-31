@@ -6,12 +6,36 @@
     <TextView
         android:id="@+id/tvNomGame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
+        android:background="#f49542"
+        android:gravity="center"
         android:text="TextView"
-        android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Title" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#c0c0c0" />
 
     <ListView
         android:id="@+id/lvComp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="405dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnAjouterComp"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:text="Button" />
+    </RelativeLayout>
+
 </LinearLayout>
