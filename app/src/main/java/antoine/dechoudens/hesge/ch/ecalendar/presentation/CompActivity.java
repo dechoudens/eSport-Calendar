@@ -3,20 +3,20 @@ package antoine.dechoudens.hesge.ch.ecalendar.presentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.icu.util.Calendar;
-import android.icu.util.GregorianCalendar;
-import android.os.Build;
 import android.provider.CalendarContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -24,24 +24,22 @@ import java.util.List;
 
 import antoine.dechoudens.hesge.ch.ecalendar.R;
 import antoine.dechoudens.hesge.ch.ecalendar.base.GetFromUrl;
-import antoine.dechoudens.hesge.ch.ecalendar.base.NomsWebService;
+import antoine.dechoudens.hesge.ch.ecalendar.base.GetKeysFromPrivateKey;
 import antoine.dechoudens.hesge.ch.ecalendar.domain.Competition;
-import antoine.dechoudens.hesge.ch.ecalendar.domain.Game;
-import antoine.dechoudens.hesge.ch.ecalendar.metier.ListeCompetitions;
+import antoine.dechoudens.hesge.ch.ecalendar.metier.Data;
 import antoine.dechoudens.hesge.ch.ecalendar.metier.ListeDate;
 
-import static android.media.MediaSyncEvent.createEvent;
-
-public class CompActivity extends AppCompatActivity {
+public class CompActivity extends AppCompatActivity{
     private Competition competiton;
     private TextView tvNomComp;
     private TextView tvDescription;
     private Button btnToCalendrier;
-    private Button btnAnnuler;
+    private Button btnLike;
     private TextView tvDateTitre;
     private ListView lvDate;
     private ListeDate listeDate;
     private static Context context;
+    private Data data = Data.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,21 +55,18 @@ public class CompActivity extends AppCompatActivity {
         tvDescription = (TextView) findViewById(R.id.tvDescription);
         tvNomComp = (TextView) findViewById(R.id.tvNomComp);
         btnToCalendrier = (Button) findViewById(R.id.btnToCalendrier);
-        btnAnnuler = (Button) findViewById(R.id.btnAnnuler);
+        btnLike = (Button) findViewById(R.id.btnLike);
         tvDateTitre = (TextView) findViewById(R.id.tvDateTitre);
         lvDate = (ListView) findViewById(R.id.lvDate);
     }
 
     private void initialise() {
         Intent intent = getIntent();
-        Log.d("lol", "intent");
-        competiton = (Competition)intent.getSerializableExtra("comp");
-        Log.d("lol", "competiton");
+        competiton = data.getCompetition();
         tvNomComp.setText(competiton.toString());
-        Log.d("lol", "tostring");
         tvDescription.setText(competiton.getDescription());
         btnToCalendrier.setText("tout Ajouter");
-        btnAnnuler.setText("Annuler");
+        btnLike.setText("Like");
         listeDate = new ListeDate(getApplicationContext() ,competiton.getDates());
         lvDate.setAdapter(listeDate.getAdapter());
         tvDateTitre.setText("Dates");
@@ -110,10 +105,38 @@ public class CompActivity extends AppCompatActivity {
                 alert.show();
             }
         });
-        btnAnnuler.setOnClickListener(new View.OnClickListener() {
+        btnLike.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-              finish();
+              AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+              alert.setTitle("Vous aimez cette contribution ?");
+              alert.setMessage("Veuillez entrer votre clef secrète");
+
+              Context contextAlert = alert.getContext();
+              LinearLayout layout = new LinearLayout(contextAlert);
+              layout.setOrientation(LinearLayout.VERTICAL);
+
+              final EditText clefSecrete = new EditText(context);
+              clefSecrete.setHint("Votre clef secrète");
+              layout.addView(clefSecrete);
+
+              alert.setView(layout);
+
+              alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int whichButton) {
+                      String secretKey = clefSecrete.getText().toString();
+                      new GetKeysFromPrivateKey().execute(secretKey);
+                  }
+              });
+
+              alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int whichButton) {
+                      // Canceled.
+                  }
+              });
+
+              alert.show();
           }
         });
 
@@ -140,5 +163,4 @@ public class CompActivity extends AppCompatActivity {
                 date.getTime()+60*60*1000);
         startActivity(calIntent);
     }
-
 }

@@ -134,7 +134,7 @@ public class AjouterActivity extends AppCompatActivity implements PostEntries.Li
                 String description = etDescription.getText().toString();
                 List<String> dates = new ArrayList<String>();
                 dates.add(etDate1.getText().toString());
-                Competition competition = new Competition(nom, description, "", dates, game);
+                Competition competition = new Competition(nom, description, "", dates, game, "");
                 new PostEntries(AjouterActivity.this).execute(competition);
 
                 dialog = new ProgressDialog(AjouterActivity.this);
@@ -145,6 +145,7 @@ public class AjouterActivity extends AppCompatActivity implements PostEntries.Li
                 dialog.show();
             }
         });
+
 
         etNom.addTextChangedListener(tw);
         etDescription.addTextChangedListener(tw);

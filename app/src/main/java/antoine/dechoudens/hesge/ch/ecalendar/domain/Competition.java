@@ -16,13 +16,17 @@ public class Competition implements Comparable, Serializable{
     String hash;
     List<String> dates;
     Game game;
+    String author;
+    private String publicKey;
 
-    public Competition(String nom, String description, String hash, List<String> dates, Game game) {
+    public Competition(String nom, String description, String hash, List<String> dates, Game game, String author) {
         this.nom = nom;
         this.description = description;
         this.hash = hash;
         this.game = game;
         this.dates = dates;
+        this.author = author;
+        this.publicKey = "";
     }
 
     public String getNom() {
@@ -45,6 +49,22 @@ public class Competition implements Comparable, Serializable{
 
     public Game getGame() {
         return game;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
     }
 
     @Override

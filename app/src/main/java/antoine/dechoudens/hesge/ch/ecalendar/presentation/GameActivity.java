@@ -1,5 +1,6 @@
 package antoine.dechoudens.hesge.ch.ecalendar.presentation;
 
+import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,12 +28,15 @@ import java.util.TreeSet;
 
 import antoine.dechoudens.hesge.ch.ecalendar.R;
 import antoine.dechoudens.hesge.ch.ecalendar.base.GetFromUrl;
+import antoine.dechoudens.hesge.ch.ecalendar.base.GetKeysFromMail;
 import antoine.dechoudens.hesge.ch.ecalendar.base.NomsWebService;
 import antoine.dechoudens.hesge.ch.ecalendar.domain.Competition;
 import antoine.dechoudens.hesge.ch.ecalendar.domain.Game;
+import antoine.dechoudens.hesge.ch.ecalendar.metier.Data;
 import antoine.dechoudens.hesge.ch.ecalendar.metier.ListeCompetitions;
 import antoine.dechoudens.hesge.ch.ecalendar.metier.ListeGames;
 
+import static antoine.dechoudens.hesge.ch.ecalendar.R.id.btnLike;
 import static antoine.dechoudens.hesge.ch.ecalendar.R.id.lvGames;
 import static antoine.dechoudens.hesge.ch.ecalendar.R.id.tvComp;
 import static antoine.dechoudens.hesge.ch.ecalendar.presentation.MainActivity.COMP;
@@ -46,6 +50,8 @@ public class GameActivity extends AppCompatActivity implements GetFromUrl.Listen
     private TextView tvNomGame;
     private Game game;
     private Button btnAjouterComp;
+    private static Context context;
+    private Data data = Data.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,7 @@ public class GameActivity extends AppCompatActivity implements GetFromUrl.Listen
         definirVariables();
         initialise();
         definirListener();
+        context = this;
     }
 
     private void definirVariables() {
@@ -78,7 +85,7 @@ public class GameActivity extends AppCompatActivity implements GetFromUrl.Listen
                 HashMap<String, Object> hm = (HashMap<String, Object>) parent.getItemAtPosition(position);
                 Competition comp = (Competition) hm.get(ListeCompetitions.REF_COMP);
                 Intent intent = new Intent(getApplicationContext(), CompActivity.class);
-                intent.putExtra("comp", comp);
+                data.setCompetition(comp);
                 startActivityForResult(intent, COMP);
             }
         });
@@ -97,23 +104,29 @@ public class GameActivity extends AppCompatActivity implements GetFromUrl.Listen
     public void onGetFromUrlResult(JSONObject json) {
         TreeSet<Competition> comps = new TreeSet<>();
         try {
-            JSONObject jsonEntries = json.getJSONObject("dictionary").getJSONObject("entries");
+            JSONObject jsonDictionary = json.getJSONObject("dictionary");
+            String author = (String)jsonDictionary.get("author");
+
+            JSONObject jsonEntries = jsonDictionary.getJSONObject("entries");
             Iterator itr = jsonEntries.keys();
             String res = "";
             while(itr.hasNext()){
                 String key = (String) itr.next();
                 JSONObject jsonEntry = jsonEntries.getJSONObject(key);
                 String values = jsonEntry.getString("value");
-                comps.add(createCompetition(values, key));
+                Competition comp = createCompetition(values, key, author);
+                new GetKeysFromMail().execute(comp);
+                comps.add(comp);
             }
             listeCompetitions = new ListeCompetitions(this, comps);
             lvComp.setAdapter(listeCompetitions.getAdapter());
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
-    private Competition createCompetition(String values, String key) {
+    private Competition createCompetition(String values, String key, String author) {
         List<String> dates = new ArrayList<>();
         StringTokenizer strT = new StringTokenizer(values, ";");
         String nom = strT.nextToken();
@@ -121,7 +134,7 @@ public class GameActivity extends AppCompatActivity implements GetFromUrl.Listen
         while(strT.hasMoreTokens()) {
             dates.add(strT.nextToken());
         }
-        return new Competition(nom, description, key, dates, game);
+        return new Competition(nom, description, key, dates, game, author);
     }
 
     private String formatTag(String tag) {
@@ -134,4 +147,5 @@ public class GameActivity extends AppCompatActivity implements GetFromUrl.Listen
     public void onGetFromUrlError(Exception e) {
 
     }
+
 }
