@@ -43,7 +43,7 @@ public class PostEntries extends AsyncTask<Competition, Void, String> {
             Log.d("POST COWABOO", comp.toString());
             String address = "http://groups.cowaboo.net/group3/public/api/entry";
             JSONObject json = new JSONObject();
-            json.put("secretKey", "SDNYCIKXLXEH65QVYTHQI2RZKAWLMRRP2V56527O35ST6MNZMPIKEN2D");
+            json.put("secretKey", comp.getSecretKey());
             json.put("observatoryId", comp.getGame().getNom());
             json.put("tags", comp.getNom());
             json.put("value", comp.getValues());

@@ -18,6 +18,7 @@ public class Competition implements Comparable, Serializable{
     Game game;
     String author;
     private String publicKey;
+    private String secretKey;
 
     public Competition(String nom, String description, String hash, List<String> dates, Game game, String author) {
         this.nom = nom;
@@ -74,6 +75,14 @@ public class Competition implements Comparable, Serializable{
 
     public List<String> getDates() {
         return dates;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 
     public String getValues(){

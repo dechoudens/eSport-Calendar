@@ -39,6 +39,7 @@ public class AjouterActivity extends AppCompatActivity implements PostEntries.Li
     private EditText etDate1;
     private EditText etDescription;
     private EditText etNom;
+    private EditText etSK;
     private Button btnPost;
     private Button btnPlusDate;
     private static Context context;
@@ -60,6 +61,7 @@ public class AjouterActivity extends AppCompatActivity implements PostEntries.Li
         etDate1 = (EditText) findViewById(R.id.etDate1);
         etDescription = (EditText) findViewById(R.id.etDescription);
         etNom = (EditText) findViewById(R.id.etNom);
+        etSK = (EditText) findViewById(R.id.etSK);
         btnPost = (Button) findViewById(R.id.btnPost);
         btnPlusDate = (Button) findViewById(R.id.btnPlusDate);
         tvTitreGameAjouter = (TextView) findViewById(R.id.tvTitreGameAjouter);
@@ -135,6 +137,7 @@ public class AjouterActivity extends AppCompatActivity implements PostEntries.Li
                 List<String> dates = new ArrayList<String>();
                 dates.add(etDate1.getText().toString());
                 Competition competition = new Competition(nom, description, "", dates, game, "");
+                competition.setSecretKey(etSK.getText().toString());
                 new PostEntries(AjouterActivity.this).execute(competition);
 
                 dialog = new ProgressDialog(AjouterActivity.this);
@@ -205,5 +208,6 @@ public class AjouterActivity extends AppCompatActivity implements PostEntries.Li
         etDescription.setText("");
         etDate1.setText("");
         etNom.setText("");
+        etSK.setText("");
     }
 }
